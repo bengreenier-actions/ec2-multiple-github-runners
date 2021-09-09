@@ -13,13 +13,14 @@ class Config {
       label: core.getInput('label'),
       ec2InstanceId: core.getInput('ec2-instance-id'),
       iamRoleName: core.getInput('iam-role-name'),
-      runnerHomeDir: core.getInput('runner-home-dir'),
+      count: parseInt(core.getInput('count')),
+      spawnedCount: parseInt(core.getInput('spawned-count')),
     };
 
     const tags = JSON.parse(core.getInput('aws-resource-tags'));
     this.tagSpecifications = null;
     if (tags.length > 0) {
-      this.tagSpecifications = [{ResourceType: 'instance', Tags: tags}, {ResourceType: 'volume', Tags: tags}];
+      this.tagSpecifications = [{ ResourceType: 'instance', Tags: tags }, { ResourceType: 'volume', Tags: tags }];
     }
 
     // the values of github.context.repo.owner and github.context.repo.repo are taken from
@@ -42,6 +43,10 @@ class Config {
       throw new Error(`The 'github-token' input is not specified`);
     }
 
+    if (!this.input.count > 0) {
+      throw new Error(`The 'count' can't be 0 or negative!`);
+    }
+
     if (this.input.mode === 'start') {
       if (!this.input.ec2ImageId || !this.input.ec2InstanceType || !this.input.subnetId || !this.input.securityGroupId) {
         throw new Error(`Not all the required inputs are provided for the 'start' mode`);
@@ -56,7 +61,7 @@ class Config {
   }
 
   generateUniqueLabel() {
-    return Math.random().toString(36).substr(2, 5);
+    return "AWS-"+Math.random().toString(10).substr(2);
   }
 }
 
