@@ -24,6 +24,7 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git add dist/
+          git pull --tags
           git tag windows-experimental
           git push origin windows-experimental
           git commit -m "Update dist" || echo "No changes to commit"
