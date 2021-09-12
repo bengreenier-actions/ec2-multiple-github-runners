@@ -26,6 +26,14 @@ jobs:
           git add dist/
           git commit -m "Update dist" || echo "No changes to commit"
           git push origin main
+      - name: Delete release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true 
+          tag_name: windows-experimental
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
