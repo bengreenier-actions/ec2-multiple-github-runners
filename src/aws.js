@@ -100,8 +100,8 @@ async function startEc2Instance(label) {
         Ebs: {
           DeleteOnTermination: true,
           VolumeSize: 640,
-          VolumeType: 'io1',
-          Iops: 32000
+          // VolumeType: 'io1',
+          // Iops: 32000
         }
       }
     ]
