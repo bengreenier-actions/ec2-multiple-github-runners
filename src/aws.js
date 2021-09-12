@@ -28,7 +28,7 @@ async function startEc2Instance(label) {
     'if((Get-FileHash -Path actions-runner-win-x64-2.280.3.zip -Algorithm SHA256).Hash.ToUpper() -ne \'d45e44d3266539c92293de235b6eea3cb2dc21fe3e5b98fbf3cfa97d38bdad9f\'.ToUpper()){ throw \'Computed checksum did not match\' }',
   ]
 
-  let customConfigs = [];
+  const customConfigs = [];
 
   let latestToken = "None";
   for (let i = 0; i < config.input.count; i++) {
