@@ -37,6 +37,9 @@ inputs:
       The runner doesn't require any inbound traffic. However, outbound traffic should be allowed.
       This input is required if you use the 'start' mode.
     required: false
+  key-name:
+    description: EC2 KeyPair Name. This input is required if you use the 'start' mode.
+    required: true
   label:
     description: >-
       Name of the unique label assigned to the runner.

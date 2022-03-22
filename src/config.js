@@ -11,6 +11,7 @@ class Config {
       ec2InstanceType: core.getInput('ec2-instance-type'),
       subnetId: core.getInput('subnet-id'),
       securityGroupId: core.getInput('security-group-id'),
+      keyName: core.getInput('key-name'),
       iamRoleName: core.getInput('iam-role-name'),
       count: parseInt(core.getInput('count')),
       // Stop mode inputs
@@ -22,7 +23,10 @@ class Config {
     const tags = JSON.parse(core.getInput('aws-resource-tags'));
     this.tagSpecifications = null;
     if (tags.length > 0) {
-      this.tagSpecifications = [{ ResourceType: 'instance', Tags: tags }, { ResourceType: 'volume', Tags: tags }];
+      this.tagSpecifications = [
+        { ResourceType: 'instance', Tags: tags },
+        { ResourceType: 'volume', Tags: tags },
+      ];
     }
 
     // the values of github.context.repo.owner and github.context.repo.repo are taken from
@@ -63,7 +67,7 @@ class Config {
   }
 
   generateUniqueLabel() {
-    return "AWS-"+Math.random().toString(10).substr(2);
+    return 'AWS-' + Math.random().toString(10).substr(2);
   }
 }
 

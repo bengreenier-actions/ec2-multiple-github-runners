@@ -6,10 +6,9 @@ const gh = require('./gh');
 async function startEc2Instance(label) {
   const ec2 = new AWS.EC2();
 
+  const preMetadata = '<powershell>';
 
-  const preMetadata = "<powershell>";
-
-  const scheduleEmergencyShutdown = "shutdown /s /t 5400"; // 1 hour and a half
+  const scheduleEmergencyShutdown = 'shutdown /s /t 5400'; // 1 hour and a half
 
   const globalConfig = [
     // Install choco
@@ -23,27 +22,26 @@ async function startEc2Instance(label) {
     // Download GitHub Runner temp dir
     `mkdir C:\\TEMP; cd C:\\TEMP`,
     // Download GitHub Runner
-     'Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.280.3/actions-runner-win-x64-2.280.3.zip -OutFile actions-runner-win-x64-2.280.3.zip',
+    'Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.280.3/actions-runner-win-x64-2.280.3.zip -OutFile actions-runner-win-x64-2.280.3.zip',
     // Check hash is good
-    'if((Get-FileHash -Path actions-runner-win-x64-2.280.3.zip -Algorithm SHA256).Hash.ToUpper() -ne \'d45e44d3266539c92293de235b6eea3cb2dc21fe3e5b98fbf3cfa97d38bdad9f\'.ToUpper()){ throw \'Computed checksum did not match\' }',
-  ]
+    "if((Get-FileHash -Path actions-runner-win-x64-2.280.3.zip -Algorithm SHA256).Hash.ToUpper() -ne 'd45e44d3266539c92293de235b6eea3cb2dc21fe3e5b98fbf3cfa97d38bdad9f'.ToUpper()){ throw 'Computed checksum did not match' }",
+  ];
 
   const customConfigs = [];
 
-  let latestToken = "None";
+  let latestToken = 'None';
   for (let i = 0; i < config.input.count; i++) {
-
-    core.info("Generating user-data for runner id: " + i);
+    core.info('Generating user-data for runner id: ' + i);
     let githubRegistrationToken = await gh.getRegistrationToken();
 
     // This is needed because GitHub will return the same token if not used
     while (latestToken == githubRegistrationToken) {
-      core.warning("Got the same token, waiting for a different one...");
+      core.warning('Got the same token, waiting for a different one...');
       githubRegistrationToken = await gh.getRegistrationToken();
     }
     latestToken = githubRegistrationToken;
 
-    core.info("Latest token is: " + latestToken);
+    core.info('Latest token is: ' + latestToken);
 
     const customConfig = [
       // Create runner dir
@@ -53,25 +51,23 @@ async function startEc2Instance(label) {
       // Configure the runner for the current repo
       `.\\config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label}-${i} --unattended`,
       // Run it!
-      'start-process -Filepath run.cmd'
+      'start-process -Filepath run.cmd',
     ];
 
-    customConfigs.push(customConfig.join("\n"))
+    customConfigs.push(customConfig.join('\n'));
   }
 
-  
+  const postMetadata = '</powershell>';
 
-  const postMetadata = "</powershell>";
-
-
-  const vanillaAMIUserData = preMetadata + "\n" + scheduleEmergencyShutdown + "\n" + globalConfig.join("\n") + "\n" + customConfigs.join("\n") + "\n" + postMetadata;
-  core.info("UserData:");
+  const vanillaAMIUserData =
+    preMetadata + '\n' + scheduleEmergencyShutdown + '\n' + globalConfig.join('\n') + '\n' + customConfigs.join('\n') + '\n' + postMetadata;
+  core.info('UserData:');
   core.info(vanillaAMIUserData);
 
   const userDataBase64 = Buffer.from(vanillaAMIUserData).toString('base64');
   // const userDataBase64 = Buffer.from(userData).toString('base64');
 
-  core.info("UserData Base64:");
+  core.info('UserData Base64:');
   core.info(userDataBase64);
 
   const params = {
@@ -84,15 +80,15 @@ async function startEc2Instance(label) {
     // SecurityGroupIds: [config.input.securityGroupId],
     IamInstanceProfile: { Name: config.input.iamRoleName },
     TagSpecifications: config.tagSpecifications,
-    KeyName: 'win',
+    KeyName: config.input.keyName,
     NetworkInterfaces: [
       {
         AssociatePublicIpAddress: true,
         DeleteOnTermination: true,
         DeviceIndex: 0,
         SubnetId: config.input.subnetId,
-        Groups: [config.input.securityGroupId]
-      }
+        Groups: [config.input.securityGroupId],
+      },
     ],
     BlockDeviceMappings: [
       {
@@ -102,9 +98,9 @@ async function startEc2Instance(label) {
           VolumeSize: 640,
           // VolumeType: 'io1',
           // Iops: 32000
-        }
-      }
-    ]
+        },
+      },
+    ],
   };
 
   try {
