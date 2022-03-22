@@ -59,7 +59,7 @@ async function waitForRunnerRegistered(label) {
 
   core.info(`Waiting ${quietPeriodMs}ms for the AWS EC2 instance to be registered in GitHub as a new self-hosted runner`);
   await new Promise((r) => setTimeout(r, quietPeriodMs));
-  core.info(`Checking every ${retryMs}s if the GitHub self-hosted runner is registered`);
+  core.info(`Checking every ${retryMs}ms if the GitHub self-hosted runner is registered`);
 
   return new Promise((resolve, reject) => {
     const interval = setInterval(async () => {
