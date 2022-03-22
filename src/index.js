@@ -43,8 +43,7 @@ async function stop() {
 
   // De-register all the runners
   for (let i = 0; i < spawnedCount; i++) {
-    const runnerName = `${label}`;
-    await gh.waitForRunnerRegistered(runnerName);
+    const runnerName = `${label}-${i}`;
     await gh.removeRunner(runnerName);
   }
 }
