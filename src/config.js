@@ -14,6 +14,7 @@ class Config {
       keyName: core.getInput('key-name'),
       iamRoleName: core.getInput('iam-role-name'),
       count: parseInt(core.getInput('count')),
+      timeoutMs: parseInt(core.getInput('timeout-ms') || '30000'),
       // Stop mode inputs
       ec2InstanceId: core.getInput('ec2-instance-id'),
       label: core.getInput('label'),
@@ -67,7 +68,7 @@ class Config {
   }
 
   generateUniqueLabel() {
-    return 'AWS-' + Math.random().toString(10).substr(2);
+    return 'AWS-' + Math.random().toString(10).substring(2);
   }
 }
 
