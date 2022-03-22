@@ -3,10 +3,7 @@ const gh = require('./gh');
 const config = require('./config');
 const core = require('@actions/core');
 
-
-
 async function start() {
-
   // Generate random runner name
   const label = config.generateUniqueLabel();
 
@@ -35,7 +32,6 @@ async function start() {
 }
 
 async function stop() {
-
   // Stop the AWS EC2 machine
   await aws.terminateEc2Instance();
 
@@ -51,11 +47,11 @@ async function stop() {
     await gh.waitForRunnerRegistered(runnerName);
     await gh.removeRunner(runnerName);
   }
-
 }
 
 (async function () {
   try {
+    core.info(`Running in mode: ${config.input.mode}`);
     config.input.mode === 'start' ? await start() : await stop();
   } catch (error) {
     core.error(error);

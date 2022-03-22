@@ -80,6 +80,9 @@ inputs:
   timeout-ms:
     description: The timeout interval in MS to wait before checking if the runner is active. Defaults to 30s
     required: false
+  max-timeout-ms:
+    description: The max timeout interval to wait before killing the job. Defaults to 5m
+    required: false
 outputs:
   label:
     description: >-

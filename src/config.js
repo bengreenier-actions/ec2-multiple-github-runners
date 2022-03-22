@@ -15,6 +15,7 @@ class Config {
       iamRoleName: core.getInput('iam-role-name'),
       count: parseInt(core.getInput('count')),
       timeoutMs: parseInt(core.getInput('timeout-ms') || '30000'),
+      maxTimeoutMs: parseInt(core.getInput('max-timeout-ms') || '300000'),
       // Stop mode inputs
       ec2InstanceId: core.getInput('ec2-instance-id'),
       label: core.getInput('label'),
