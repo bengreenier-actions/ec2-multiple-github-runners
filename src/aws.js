@@ -65,7 +65,6 @@ async function startEc2Instance(label) {
   core.info(vanillaAMIUserData);
 
   const userDataBase64 = Buffer.from(vanillaAMIUserData).toString('base64');
-  // const userDataBase64 = Buffer.from(userData).toString('base64');
 
   core.info('UserData Base64:');
   core.info(userDataBase64);
@@ -76,8 +75,6 @@ async function startEc2Instance(label) {
     MinCount: 1,
     MaxCount: 1,
     UserData: userDataBase64,
-    // SubnetId: config.input.subnetId,
-    // SecurityGroupIds: [config.input.securityGroupId],
     IamInstanceProfile: { Name: config.input.iamRoleName },
     TagSpecifications: config.tagSpecifications,
     KeyName: config.input.keyName,
@@ -96,8 +93,6 @@ async function startEc2Instance(label) {
         Ebs: {
           DeleteOnTermination: true,
           VolumeSize: 640,
-          // VolumeType: 'io1',
-          // Iops: 32000
         },
       },
     ],

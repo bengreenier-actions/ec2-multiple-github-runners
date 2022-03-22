@@ -39,7 +39,7 @@ inputs:
     required: false
   key-name:
     description: EC2 KeyPair Name. This input is required if you use the 'start' mode.
-    required: true
+    required: false
   label:
     description: >-
       Name of the unique label assigned to the runner.
